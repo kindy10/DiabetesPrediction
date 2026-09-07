@@ -1,0 +1,16 @@
+# Jupyter
+.ipynb_checkpoints/
+
+# Trained models
+models/*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# Data
+data/*.csv
