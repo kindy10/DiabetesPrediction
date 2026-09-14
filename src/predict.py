@@ -111,25 +111,17 @@ def predict_diabetes(data):
         "threshold": float(threshold),
         "prediction": prediction
     }
-
-
-if __name__ == "__main__":
-
-    patient = {
-        "Pregnancies": 2,
-        "Glucose": 120,
-        "BloodPressure": 70,
-        "SkinThickness": 30,
-        "Insulin": 100,
-        "BMI": 30.5,
-        "DiabetesPedigreeFunction": 0.5,
-        "Age": 35
-    }
+    
+#Test several patients automatically
+def print_prediction(patient_name, patient):
+    """
+    Make and display a prediction for one patient.
+    """
 
     result = predict_diabetes(patient)
 
-    print("Diabetes Prediction")
-    print("-------------------")
+    print(f"\n{patient_name}")
+    print("-" * len(patient_name))
 
     print(
         f"Probability: "
@@ -150,3 +142,53 @@ if __name__ == "__main__":
         print("Result: Positive")
     else:
         print("Result: Negative")
+
+if __name__ == "__main__":
+
+    patient_1 = {
+        "Pregnancies": 2,
+        "Glucose": 120,
+        "BloodPressure": 70,
+        "SkinThickness": 30,
+        "Insulin": 100,
+        "BMI": 30.5,
+        "DiabetesPedigreeFunction": 0.5,
+        "Age": 35
+    }
+
+    patient_2 = {
+        "Pregnancies": 6,
+        "Glucose": 148,
+        "BloodPressure": 72,
+        "SkinThickness": 35,
+        "Insulin": 0,
+        "BMI": 33.6,
+        "DiabetesPedigreeFunction": 0.627,
+        "Age": 50
+    }
+
+    patient_3 = {
+        "Pregnancies": 0,
+        "Glucose": 90,
+        "BloodPressure": 60,
+        "SkinThickness": 20,
+        "Insulin": 80,
+        "BMI": 22.5,
+        "DiabetesPedigreeFunction": 0.2,
+        "Age": 25
+    }
+
+    print_prediction(
+        "Patient 1",
+        patient_1
+    )
+
+    print_prediction(
+        "Patient 2",
+        patient_2
+    )
+
+    print_prediction(
+        "Patient 3",
+        patient_3
+    )
