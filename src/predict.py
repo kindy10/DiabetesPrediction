@@ -199,80 +199,42 @@ def print_prediction(patient_name, patient):
 
 if __name__ == "__main__":
 
-    patient_1 = {
-        "Pregnancies": 2,
-        "Glucose": 120,
-        "BloodPressure": 70,
-        "SkinThickness": 30,
-        "Insulin": 100,
-        "BMI": 30.5,
-        "DiabetesPedigreeFunction": 0.5,
-        "Age": 35
+    print("Diabetes Prediction")
+    print("-------------------")
+    print("Enter patient information.")
+    print()
+
+    patient = {
+        "Pregnancies": float(input("Pregnancies: ")),
+        "Glucose": float(input("Glucose: ")),
+        "BloodPressure": float(input("BloodPressure: ")),
+        "SkinThickness": float(input("SkinThickness: ")),
+        "Insulin": float(input("Insulin: ")),
+        "BMI": float(input("BMI: ")),
+        "DiabetesPedigreeFunction": float(input("DiabetesPedigreeFunction:")),
+        "Age": float(input("Age: "))
     }
 
-    patient_2 = {
-        "Pregnancies": 6,
-        "Glucose": 148,
-        "BloodPressure": 72,
-        "SkinThickness": 35,
-        "Insulin": 0,
-        "BMI": 33.6,
-        "DiabetesPedigreeFunction": 0.627,
-        "Age": 50
-    }
-
-    patient_3 = {
-        "Pregnancies": 0,
-        "Glucose": 90,
-        "BloodPressure": 60,
-        "SkinThickness": 20,
-        "Insulin": 80,
-        "BMI": 22.5,
-        "DiabetesPedigreeFunction": 0.2,
-        "Age": 25
-    }
-
-    print_prediction("Patient 1",patient_1)
-
-    print_prediction("Patient 2",patient_2)
-
-    print_prediction("Patient 3", patient_3 )
-
-   #invalid input
-    """ invalid_patient = {
-        "Pregnancies": 2,
-        "Glucose": -120,
-        "BloodPressure": 70,
-        "SkinThickness": 30,
-        "Insulin": 100,
-        "BMI": 30.5,
-        "DiabetesPedigreeFunction": 0.5,
-        "Age": 35
-        }
-    #missing feature
-    invalid_patient = {
-        "Pregnancies": 2,
-        "Glucose": 120,
-        "BloodPressure": 70,
-        "BMI": 30.5,
-        "DiabetesPedigreeFunction": 0.5,
-        "Age": 35
-    }
-    """
-    invalid_patient = {
-        "Pregnancies": 2,
-        "Glucose": "one hundred",
-        "BloodPressure": 70,
-        "SkinThickness": 30,
-        "Insulin": 100,
-        "BMI": 30.5,
-        "DiabetesPedigreeFunction": 0.5,
-        "Age": 35
-    }
-    
     try:
-        result = predict_diabetes(invalid_patient)
-        print(result)
-    
-    except ValueError as error:
-        print("Validation error:", error)
+
+        result = predict_diabetes(patient)
+
+        print()
+        print("Prediction Result")
+        print("-----------------")
+
+        print(f"Probability: "f"{result['probability']:.4f}")
+
+        print( f"Threshold: "f"{result['threshold']:.2f}")
+
+        print(f"Prediction: "f"{result['prediction']}")
+
+        if result["prediction"] == 1:
+            print("Result: Positive")
+        else:
+            print("Result: Negative")
+
+    except (ValueError, TypeError) as error:
+
+        print()
+        print("Input error:", error)
