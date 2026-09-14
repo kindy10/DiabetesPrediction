@@ -5,6 +5,17 @@ import numpy as np
 import pandas as pd
 
 
+#Add validation constants
+NON_NEGATIVE_FEATURES = [
+    "Pregnancies",
+    "Glucose",
+    "BloodPressure",
+    "SkinThickness",
+    "Insulin",
+    "BMI",
+    "DiabetesPedigreeFunction",
+    "Age"
+]
 # Zero represents an invalid/missing measurement
 ZERO_AS_MISSING = [
     "Glucose",
@@ -35,6 +46,52 @@ def load_model():
     return joblib.load(MODEL_PATH)
 
 
+#Validation function
+def validate_input(data, expected_features):
+    """
+    Validate one patient's input before prediction.
+    """
+
+    if not isinstance(data, dict):
+        raise TypeError(
+            "Patient data must be provided as a dictionary."
+        )
+
+    # Check for missing features
+    missing_features = [
+        feature
+        for feature in expected_features
+        if feature not in data
+    ]
+
+    if missing_features:
+        raise ValueError(
+            f"Missing required features: {missing_features}"
+        )
+
+    # Check numeric values
+    for feature in expected_features:
+
+        value = data[feature]
+
+        try:
+            numeric_value = float(value)
+        except (TypeError, ValueError):
+            raise ValueError(
+                f"{feature} must be numeric. "
+                f"Received: {value}"
+            )
+
+        if not np.isfinite(numeric_value):
+            raise ValueError(
+                f"{feature} must be a finite number."
+            )
+
+        if feature in NON_NEGATIVE_FEATURES:
+            if numeric_value < 0:
+                raise ValueError(
+                    f"{feature} cannot be negative."
+                )
 def prepare_input(data, expected_features):
     """
     Prepare one patient's data for prediction.
@@ -86,10 +143,9 @@ def predict_diabetes(data):
     threshold = model_package["threshold"]
     expected_features = model_package["features"]
 
-    prepared_data = prepare_input(
-        data,
-        expected_features
-    )
+    validate_input(data,expected_features)
+
+    prepared_data = prepare_input(data,expected_features)
 
     # Safety check
     if prepared_data.shape != (1, len(expected_features)):
@@ -102,9 +158,7 @@ def predict_diabetes(data):
         prepared_data
     )[0, 1]
 
-    prediction = int(
-        probability >= threshold
-    )
+    prediction = int(probability >= threshold)
 
     return {
         "probability": float(probability),
@@ -178,17 +232,47 @@ if __name__ == "__main__":
         "Age": 25
     }
 
-    print_prediction(
-        "Patient 1",
-        patient_1
-    )
+    print_prediction("Patient 1",patient_1)
 
-    print_prediction(
-        "Patient 2",
-        patient_2
-    )
+    print_prediction("Patient 2",patient_2)
 
-    print_prediction(
-        "Patient 3",
-        patient_3
-    )
+    print_prediction("Patient 3", patient_3 )
+
+   #invalid input
+    """ invalid_patient = {
+        "Pregnancies": 2,
+        "Glucose": -120,
+        "BloodPressure": 70,
+        "SkinThickness": 30,
+        "Insulin": 100,
+        "BMI": 30.5,
+        "DiabetesPedigreeFunction": 0.5,
+        "Age": 35
+        }
+    #missing feature
+    invalid_patient = {
+        "Pregnancies": 2,
+        "Glucose": 120,
+        "BloodPressure": 70,
+        "BMI": 30.5,
+        "DiabetesPedigreeFunction": 0.5,
+        "Age": 35
+    }
+    """
+    invalid_patient = {
+        "Pregnancies": 2,
+        "Glucose": "one hundred",
+        "BloodPressure": 70,
+        "SkinThickness": 30,
+        "Insulin": 100,
+        "BMI": 30.5,
+        "DiabetesPedigreeFunction": 0.5,
+        "Age": 35
+    }
+    
+    try:
+        result = predict_diabetes(invalid_patient)
+        print(result)
+    
+    except ValueError as error:
+        print("Validation error:", error)
