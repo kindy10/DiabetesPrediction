@@ -6,3 +6,6 @@ seaborn
 joblib
 jupyter
 pytest
+fastapi
+uvicorn
+httpx

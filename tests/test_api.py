@@ -49,10 +49,27 @@ def test_prediction_endpoint():
     assert "probability" in data
     assert "threshold" in data
     assert "prediction" in data
+    assert "result" in data
 
     assert 0 <= data["probability"] <= 1
     assert 0 <= data["threshold"] <= 1
     assert data["prediction"] in [0, 1]
+    assert data["result"] in ["Positive","Negative"]
+
+def test_prediction_result_matches_prediction():
+    response = client.post(
+        "/predict",
+        json=VALID_PATIENT
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    if data["prediction"] == 1:
+        assert data["result"] == "Positive"
+    else:
+        assert data["result"] == "Negative"
 
 
 def test_prediction_rejects_negative_value():

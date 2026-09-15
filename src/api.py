@@ -36,11 +36,25 @@ def health():
 
 
 @app.post("/predict")
-def predict(patient:PatientInput):
+def predict(patient: PatientInput):
 
     try:
-        result = predict_diabetes(patient.model_dump())
-        return result
+        result = predict_diabetes(
+            patient.model_dump()
+        )
+
+        prediction = result["prediction"]
+
+        return {
+            "prediction": prediction,
+            "result": (
+                "Positive"
+                if prediction == 1
+                else "Negative"
+            ),
+            "probability": result["probability"],
+            "threshold": result["threshold"]
+        }
 
     except(ValueError,TypeError) as error:
         raise HTTPException(status_code=400,detail=str(error))
