@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from functools import lru_cache
 import joblib
 import numpy as np
 import pandas as pd
@@ -32,10 +32,12 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 # Saved model
 MODEL_PATH = PROJECT_ROOT / "models" / "diabetes_knn_final.pkl"
 
-
+@lru_cache(maxsize=1)
 def load_model():
     """
     Load the saved diabetes prediction model package.
+
+    the model is loaded once and then reused.
     """
 
     if not MODEL_PATH.exists():

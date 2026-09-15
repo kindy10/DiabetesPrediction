@@ -123,3 +123,14 @@ def test_extra_feature_is_rejected():
 
     with pytest.raises(ValueError):
         predict_diabetes(patient)
+
+
+def test_model_is_cached():
+    from src.predict import load_model
+
+    load_model.cache_clear()
+
+    first_model = load_model()
+    second_model = load_model()
+
+    assert first_model is second_model
