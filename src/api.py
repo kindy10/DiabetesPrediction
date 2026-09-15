@@ -20,6 +20,11 @@ class PatientInput(BaseModel):
     DiabetesPedigreeFunction: float = Field(..., ge=0)
     Age: float = Field(..., ge=0)
 
+class PredictionResponse(BaseModel):
+    prediction:int
+    result:str
+    probability:float
+    threshold:float
 
 @app.get("/")
 def root():
@@ -35,7 +40,10 @@ def health():
     }
 
 
-@app.post("/predict")
+@app.post(
+    "/predict",
+    response_model=PredictionResponse
+)
 def predict(patient: PatientInput):
 
     try:
