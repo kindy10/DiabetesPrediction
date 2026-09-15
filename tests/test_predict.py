@@ -111,3 +111,15 @@ def test_non_numeric_value_is_rejected():
 
     with pytest.raises(ValueError):
         predict_diabetes(patient)
+
+def test_extra_feature_is_rejected():
+    """
+    Input containing an unexpected feature should raise ValueError.
+    """
+
+    patient = VALID_PATIENT.copy()
+
+    patient["UnexpectedFeature"] = 123
+
+    with pytest.raises(ValueError):
+        predict_diabetes(patient)

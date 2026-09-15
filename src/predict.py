@@ -69,6 +69,17 @@ def validate_input(data, expected_features):
             f"Missing required features: {missing_features}"
         )
 
+    #Check for unexpected features
+    extra_features = [
+        feature
+        for feature in data
+        if feature not in expected_features
+    ]
+
+    if extra_features:
+        raise ValueError(
+            f"Unexpected features: {extra_features}"
+        )
     # Check numeric values
     for feature in expected_features:
 
