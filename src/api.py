@@ -1,7 +1,15 @@
+import logging
+
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel,Field
 
 from src.predict import predict_diabetes
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Diabetes Prediction API",
@@ -50,6 +58,7 @@ def predict(patient: PatientInput):
         result = predict_diabetes(
             patient.model_dump()
         )
+        logger.info("Diabetes prediction   completed")
 
         prediction = result["prediction"]
 
@@ -64,13 +73,10 @@ def predict(patient: PatientInput):
             "threshold": result["threshold"]
         }
     except FileNotFoundError:
+        logger.error("Prediction model is unavailable")
+
         raise HTTPException(
-            status_code=500,
-            detail="Prediction model is unavailable."
-        )
-    except(ValueError,TypeError) as error:
-        raise HTTPException(
-            status_code=400,
-            detail=str(error)
-        )
+        status_code=500,
+        detail="Prediction model is unavailable."
+    )
 
