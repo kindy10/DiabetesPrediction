@@ -99,18 +99,16 @@ def test_prediction_rejects_missing_feature():
     assert response.status_code == 422
 
 
-def test_prediction_returns_500_when_model_is_missing(
-    monkeypatch
-):
+def test_prediction_returns_500_when_model_is_missing(monkeypatch):
     from src.routes import prediction
 
-    def mock_load_model():
+    def mock_predict(data):
         raise FileNotFoundError("Model not found")
 
     monkeypatch.setattr(
-        prediction,
-        "predict_diabetes",
-        lambda data: mock_load_model()
+        prediction.prediction_service,
+        "predict",
+        mock_predict
     )
 
     response = client.post(
@@ -119,7 +117,6 @@ def test_prediction_returns_500_when_model_is_missing(
     )
 
     assert response.status_code == 500
-
     assert response.json()["detail"] == (
         "Prediction model is unavailable."
     )
@@ -150,35 +147,13 @@ def test_prediction_rejects_unrealistic_age():
 def test_prediction_returns_500_on_unexpected_error(monkeypatch):
     from src.routes import prediction
 
-    def mock_predict_diabetes(data):
+    def mock_predict(data):
         raise RuntimeError("Unexpected prediction failure")
 
     monkeypatch.setattr(
-        prediction,
-        "predict_diabetes",
-        mock_predict_diabetes
-    )
-
-    response = client.post(
-        "/predict",
-        json=VALID_PATIENT
-    )
-
-    assert response.status_code == 500
-    assert response.json()["detail"] == (
-        "An unexpected error occurred during prediction."
-    )
-
-def test_prediction_returns_500_on_unexpected_error(monkeypatch):
-    from src.routes import prediction
-
-    def mock_predict_diabetes(data):
-        raise RuntimeError("Unexpected prediction failure")
-
-    monkeypatch.setattr(
-        prediction,
-        "predict_diabetes",
-        mock_predict_diabetes
+        prediction.prediction_service,
+        "predict",
+        mock_predict
     )
 
     response = client.post(

@@ -3,10 +3,11 @@ import logging
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from src.predict import predict_diabetes
+from src.services.prediction_service import PredictionService
 
 
 logger = logging.getLogger(__name__)
+prediction_service = PredictionService()
 
 router = APIRouter(
     prefix="/predict",
@@ -44,8 +45,8 @@ class PredictionResponse(BaseModel):
 )
 def predict(patient: PatientInput):
     try:
-        result = predict_diabetes(
-            patient.model_dump()
+        result = prediction_service.predict(
+    patient.model_dump()
         )
 
         logger.info(
