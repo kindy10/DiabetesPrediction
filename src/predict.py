@@ -1,8 +1,8 @@
-from pathlib import Path
 from functools import lru_cache
 import joblib
 import numpy as np
 import pandas as pd
+from src.config import MODEL_PATH
 
 
 #Add validation constants
@@ -26,11 +26,6 @@ ZERO_AS_MISSING = [
 ]
 
 
-# Project root directory
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
-
-# Saved model
-MODEL_PATH = PROJECT_ROOT / "models" / "diabetes_knn_final.pkl"
 
 @lru_cache(maxsize=1)
 def load_model():
