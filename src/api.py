@@ -13,8 +13,14 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(
     title="Diabetes Prediction API",
-    description="Machine learning API for diabetes prediction",
-    version="1.0.0"
+    description=(
+        "A machine learning API that predicts the likelihood "
+        "of diabetes using patient health measurements."
+    ),
+    version="1.0.0",
+    contact={
+        "name": "Diabetes Prediction Project"
+    }
 )
 
 
@@ -35,14 +41,22 @@ class PredictionResponse(BaseModel):
     threshold:float
     predicted_at:str
 
-@app.get("/")
+@app.get(
+    "/",
+    tags=["System"],
+    summary="API information"
+)
 def root():
     return {
         "message": "Diabetes Prediction API",
         "status": "running"
     }
 
-@app.get("/health")
+@app.get(
+    "/health",
+    tags=["System"],
+    summary="Check API health"
+)
 def health():
     return {
         "status": "healthy"
@@ -51,7 +65,13 @@ def health():
 
 @app.post(
     "/predict",
-    response_model=PredictionResponse
+    response_model=PredictionResponse,
+    tags=["Prediction"],
+    summary="Predict diabetes",
+    description=(
+        "Predict whether a patient is likely to have diabetes "
+        "based on the provided health measurements."
+    )
 )
 def predict(patient: PatientInput):
 
