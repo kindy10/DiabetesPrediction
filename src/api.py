@@ -81,4 +81,13 @@ def predict(patient: PatientInput):
         status_code=500,
         detail="Prediction model is unavailable."
     )
+    except Exception:
+        logger.exception(
+            "Unexpected error during diabetes prediction"
+        )
+
+        raise HTTPException(
+            status_code=500,
+            detail="An unexpected error occurred during prediction."
+        )
 

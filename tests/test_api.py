@@ -145,3 +145,25 @@ def test_prediction_rejects_unrealistic_age():
     )
 
     assert response.status_code == 422
+
+def test_prediction_returns_500_on_unexpected_error(monkeypatch):
+    from src import api
+
+    def mock_predict_diabetes(data):
+        raise RuntimeError("Unexpected prediction failure")
+
+    monkeypatch.setattr(
+        api,
+        "predict_diabetes",
+        mock_predict_diabetes
+    )
+
+    response = client.post(
+        "/predict",
+        json=VALID_PATIENT
+    )
+
+    assert response.status_code == 500
+    assert response.json()["detail"] == (
+        "An unexpected error occurred during prediction."
+    )
