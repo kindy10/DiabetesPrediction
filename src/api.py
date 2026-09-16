@@ -19,14 +19,14 @@ app = FastAPI(
 
 
 class PatientInput(BaseModel):
-    Pregnancies:float =Field(...,ge=0)
-    Glucose: float = Field(..., ge=0)
-    BloodPressure: float = Field(..., ge=0)
-    SkinThickness: float = Field(..., ge=0)
-    Insulin: float = Field(..., ge=0)
-    BMI: float = Field(..., ge=0)
-    DiabetesPedigreeFunction: float = Field(..., ge=0)
-    Age: float = Field(..., ge=0)
+    Pregnancies:float =Field(...,ge=0,le=20)
+    Glucose: float = Field(..., ge=0,le=300)
+    BloodPressure: float = Field(..., ge=0,le=200)
+    SkinThickness: float = Field(..., ge=0,le=100)
+    Insulin: float = Field(..., ge=0,le=1000)
+    BMI: float = Field(..., ge=0,le=80)
+    DiabetesPedigreeFunction: float = Field(..., ge=0,le=3)
+    Age: float = Field(..., ge=0,le=120)
 
 class PredictionResponse(BaseModel):
     prediction:int

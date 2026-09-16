@@ -122,3 +122,25 @@ def test_prediction_returns_500_when_model_is_missing(
     assert response.json()["detail"] == (
         "Prediction model is unavailable."
     )
+
+def test_prediction_rejects_unrealistic_value():
+    patient = VALID_PATIENT.copy()
+    patient["Glucose"] = 5000
+
+    response = client.post(
+        "/predict",
+        json=patient
+    )
+
+    assert response.status_code == 422
+
+def test_prediction_rejects_unrealistic_age():
+    patient = VALID_PATIENT.copy()
+    patient["Age"] = 200
+
+    response = client.post(
+        "/predict",
+        json=patient
+    )
+
+    assert response.status_code == 422
