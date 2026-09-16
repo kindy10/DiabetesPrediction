@@ -50,12 +50,13 @@ def test_prediction_endpoint():
     assert "threshold" in data
     assert "prediction" in data
     assert "result" in data
+    assert "predicted_at" in data
 
     assert 0 <= data["probability"] <= 1
     assert 0 <= data["threshold"] <= 1
     assert data["prediction"] in [0, 1]
     assert data["result"] in ["Positive","Negative"]
-
+    assert isinstance(data["predicted_at"],str)
 def test_prediction_result_matches_prediction():
     response = client.post(
         "/predict",

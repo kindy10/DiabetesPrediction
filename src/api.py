@@ -1,5 +1,5 @@
 import logging
-
+from datetime import datetime, timezone
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel,Field
 
@@ -33,6 +33,7 @@ class PredictionResponse(BaseModel):
     result:str
     probability:float
     threshold:float
+    predicted_at:str
 
 @app.get("/")
 def root():
@@ -70,7 +71,8 @@ def predict(patient: PatientInput):
                 else "Negative"
             ),
             "probability": result["probability"],
-            "threshold": result["threshold"]
+            "threshold": result["threshold"],
+            "predicted_at":datetime.now(timezone.utc).isoformat()
         }
     except FileNotFoundError:
         logger.error("Prediction model is unavailable")
