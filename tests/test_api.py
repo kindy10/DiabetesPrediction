@@ -96,3 +96,29 @@ def test_prediction_rejects_missing_feature():
     )
 
     assert response.status_code == 422
+
+
+def test_prediction_returns_500_when_model_is_missing(
+    monkeypatch
+):
+    from src import api
+
+    def mock_load_model():
+        raise FileNotFoundError("Model not found")
+
+    monkeypatch.setattr(
+        api,
+        "predict_diabetes",
+        lambda data: mock_load_model()
+    )
+
+    response = client.post(
+        "/predict",
+        json=VALID_PATIENT
+    )
+
+    assert response.status_code == 500
+
+    assert response.json()["detail"] == (
+        "Prediction model is unavailable."
+    )

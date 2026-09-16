@@ -63,7 +63,14 @@ def predict(patient: PatientInput):
             "probability": result["probability"],
             "threshold": result["threshold"]
         }
-
+    except FileNotFoundError:
+        raise HTTPException(
+            status_code=500,
+            detail="Prediction model is unavailable."
+        )
     except(ValueError,TypeError) as error:
-        raise HTTPException(status_code=400,detail=str(error))
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
 

@@ -178,4 +178,3 @@ def predict_diabetes(data):
         "threshold": float(threshold),
         "prediction": prediction
     }
-
